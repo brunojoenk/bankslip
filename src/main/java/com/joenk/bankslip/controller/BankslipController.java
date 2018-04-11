@@ -23,7 +23,6 @@ import com.joenk.bankslip.exception.FieldInvalidValueException;
 import com.joenk.bankslip.exception.NotFoundEntityException;
 import com.joenk.bankslip.exception.UUIDInvalidException;
 import com.joenk.bankslip.model.BankslipDTO;
-import com.joenk.bankslip.model.ReturnMessageDTO;
 import com.joenk.bankslip.service.BankslipService;
 
 @RestController
@@ -31,58 +30,58 @@ import com.joenk.bankslip.service.BankslipService;
 public class BankslipController {
 
 	@Autowired
-	private BankslipService bankslipService;
+	public BankslipService bankslipService;
 	
 	@PostMapping
-	public ResponseEntity<ReturnMessageDTO> create(@RequestBody @Valid final BankslipDTO bankslipDTO) {
+	public ResponseEntity<Object> create(@RequestBody @Valid final BankslipDTO bankslipDTO) {
 		bankslipService.create(bankslipDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ReturnMessageDTO.Builder().build("Bankslip Created", bankslipDTO));
+		return ResponseEntity.status(HttpStatus.CREATED).body(Constants.MSG_BANKSLIP_CREATED);
 	}
 	
 	@GetMapping
-	public ResponseEntity<ReturnMessageDTO> listAll() {
+	public ResponseEntity<Object> listAll() {
 		final List<BankslipDTO> bankslipDTOs = bankslipService.listAll();
-		return ResponseEntity.status(HttpStatus.OK).body(new ReturnMessageDTO.Builder().build("Ok", bankslipDTOs));
+		return ResponseEntity.status(HttpStatus.OK).body(bankslipDTOs);
 	}
 	
 	@GetMapping(Constants.PATH_BANKSLIP_GET_BY_ID)
-	public ResponseEntity<ReturnMessageDTO> getById(@PathVariable(value = Constants.PARAM_ID) final String bankslipId) {
+	public ResponseEntity<Object> getById(@PathVariable(value = Constants.PARAM_ID) final String bankslipId) {
 		final BankslipDTO bankslipDTO = bankslipService.getById(bankslipId);
-		return ResponseEntity.status(HttpStatus.OK).body(new ReturnMessageDTO.Builder().build("Ok", bankslipDTO));
+		return ResponseEntity.status(HttpStatus.OK).body(bankslipDTO);
 	}
 
 	@PutMapping(Constants.PATH_BANKSLIP_PAY)
-	public ResponseEntity<ReturnMessageDTO> pay(@PathVariable(value = Constants.PARAM_ID)final String bankslipId) {
+	public ResponseEntity<Object> pay(@PathVariable(value = Constants.PARAM_ID)final String bankslipId) {
 		bankslipService.pay(bankslipId);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ReturnMessageDTO.Builder().build("Bankslip paid"));
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Constants.MSG_BANKSLIP_PAID);
 	}
 
 	@DeleteMapping(Constants.PATH_BANKSLIP_CANCEL)
-	public ResponseEntity<ReturnMessageDTO> cancel(@PathVariable(value = Constants.PARAM_ID)final String bankslipId) {
+	public ResponseEntity<Object> cancel(@PathVariable(value = Constants.PARAM_ID)final String bankslipId) {
 		bankslipService.cancel(bankslipId);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ReturnMessageDTO.Builder().build("Bankslip canceled"));
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Constants.MSG_BANKSLIP_CANCELED);
 	}
 	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ReturnMessageDTO> handleHttpMessageNotReadableException() {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ReturnMessageDTO.Builder().build("Bankslip not provided in the request body"));
+	public ResponseEntity<Object> handleHttpMessageNotReadableException() {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Constants.MSG_BANKSLIP_NOT_PROVIDED);
 	}
 	
 	@ExceptionHandler(UUIDInvalidException.class)
-	public ResponseEntity<ReturnMessageDTO> handleUUIDInvalidException(final UUIDInvalidException ex) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ReturnMessageDTO.Builder().build(ex.getMessageErroṛ()));
+	public ResponseEntity<Object> handleUUIDInvalidException(final UUIDInvalidException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Constants.MSG_ERROR_UUID_INVALID);
 	}
 
 	@ExceptionHandler(FieldInvalidValueException.class)
-	public ResponseEntity<ReturnMessageDTO> handleFieldInvalidValueException(final FieldInvalidValueException ex) {
-		final StringBuilder sbErrorMessage = new StringBuilder("Invalid bankslip provided, The possible reasons are:");
+	public ResponseEntity<Object> handleFieldInvalidValueException(final FieldInvalidValueException ex) {
+		final StringBuilder sbErrorMessage = new StringBuilder(Constants.MSG_INVALID_BANKSLIP_PROVIDED);
 		sbErrorMessage.append(ex.getMessageErroṛ());
-		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new ReturnMessageDTO.Builder().build(sbErrorMessage.toString()));
+		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(sbErrorMessage.toString());
 	}
 	
 	@ExceptionHandler(NotFoundEntityException.class)
-	public ResponseEntity<ReturnMessageDTO> handleNotFoundEntityException(final NotFoundEntityException ex) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ReturnMessageDTO.Builder().build(ex.getMessageErroṛ()));
+	public ResponseEntity<Object> handleNotFoundEntityException(final NotFoundEntityException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Constants.MSG_ERROR_BANKSLIP_NOT_FOUND);
 	}
 	
 }

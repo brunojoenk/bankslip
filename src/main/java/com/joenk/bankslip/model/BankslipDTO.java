@@ -3,27 +3,28 @@ package com.joenk.bankslip.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.joenk.bankslip.constants.Constants;
 
 public class BankslipDTO implements Serializable {
 	
 	private static final long serialVersionUID = -2194820752775365365L;
 	
-	@JsonProperty("id")
+	@JsonProperty(Constants.FIELD_NAME_ID)
 	private String id;
 	
-	@JsonProperty("due_date")
+	@JsonProperty(Constants.FIELD_NAME_DUE_DATE)
     private String dueDate;
 	
-	@JsonProperty("total_in_cents")
+	@JsonProperty(Constants.FIELD_NAME_TOTAL_IN_CENTS)
     private String totalInCents;
 	
-	@JsonProperty("customer")
+	@JsonProperty(Constants.FIELD_NAME_CUSTOMER)
     private String customer;
 	
-	@JsonProperty("status")
+	@JsonProperty(Constants.FIELD_NAME_STATUS)
     private String status;
 	
-	@JsonProperty("fine")
+	@JsonProperty(Constants.FIELD_NAME_FINE)
 	private String fine;
 
 	public String getId() {

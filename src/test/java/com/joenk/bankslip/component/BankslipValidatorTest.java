@@ -12,8 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import com.joenk.bankslip.component.BankslipValidator;
+import com.joenk.bankslip.constants.Constants;
 import com.joenk.bankslip.entity.Bankslip;
 import com.joenk.bankslip.enums.Status;
 import com.joenk.bankslip.exception.FieldInvalidValueException;
@@ -80,7 +82,7 @@ public class BankslipValidatorTest {
 	@Test(expected = FieldInvalidValueException.class)
 	public void validTextMessageErrorTestException(){
 		final StringBuilder sbMessage = new StringBuilder();
-		sbMessage.append("The field due_date is a required field");
+		sbMessage.append(Constants.getMsgRequiredField(Constants.FIELD_NAME_DUE_DATE));
 		bankslipValidator.validTextMessageError(sbMessage);
 	}
 	
@@ -93,12 +95,12 @@ public class BankslipValidatorTest {
 	
 	@Test(expected = FieldInvalidValueException.class)
 	public void validTextFieldTestException(){		
-		bankslipValidator.validTextField("  ", "due_date");
+		bankslipValidator.validTextField("  ", Constants.FIELD_NAME_DUE_DATE);
 	}
 	
 	@Test
 	public void validTextFieldTextOk(){
-		final Boolean isValid = bankslipValidator.validTextField("2018-01-01", "due_date");
+		final Boolean isValid = bankslipValidator.validTextField("2018-01-01", Constants.FIELD_NAME_DUE_DATE);
 		assertTrue(isValid);
 	}
 	
@@ -114,12 +116,12 @@ public class BankslipValidatorTest {
 	public void getDueDateTestInvalid(){
 		final StringBuilder sbMessage = new StringBuilder();
 		bankslipValidator.getDueDate("01-01-2018", sbMessage);
-		assertTrue(sbMessage.toString().contains("Field due_date must be pattern YYYY-MM-DD"));
+		assertTrue(sbMessage.toString().contains(Constants.MSG_ERROR_PATTERN_DATE));
 	}
 	
 	@Test
 	public void getStatusTestOk(){
-		final Status status = bankslipValidator.getStatus("PENDING", null);
+		final Status status = bankslipValidator.getStatus(Status.PENDING.name(), null);
 		assertTrue(Status.PENDING.equals(status));
 	}
 		
@@ -127,7 +129,7 @@ public class BankslipValidatorTest {
 	public void getStatusTestInvalid(){
 		final StringBuilder sbMessage = new StringBuilder();
 		bankslipValidator.getStatus("INVALID", sbMessage);
-		assertTrue(sbMessage.toString().contains("Field status must be PENDING, PAID or CANCELED"));
+		assertTrue(sbMessage.toString().contains(Constants.MSG_ERROR_STAUTUS_INVALID));
 	}
 	
 	@Test
@@ -141,14 +143,14 @@ public class BankslipValidatorTest {
 	public void getTotalInCentsTestInvalidCaracter(){
 		final StringBuilder sbMessage = new StringBuilder();
 		bankslipValidator.getTotalInCents("A", sbMessage);
-		assertTrue(sbMessage.toString().contains("Only number is valid"));
+		assertTrue(sbMessage.toString().contains(Constants.MSG_ERROR_ONLY_NUMBER));
 	}
 	
 	@Test
 	public void getTotalInCentsTestInvalidNumber(){
 		final StringBuilder sbMessage = new StringBuilder();
 		bankslipValidator.getTotalInCents("0", sbMessage);
-		assertTrue(sbMessage.toString().contains("The number must be greater than 0"));
+		assertTrue(sbMessage.toString().contains(Constants.MSG_ERROR_INTEGER_GREATER_0));
 	}
 	
 	@Test
@@ -162,7 +164,7 @@ public class BankslipValidatorTest {
 	public void getCustomerTestInvalid(){
 		final StringBuilder sbMessage = new StringBuilder();
 		bankslipValidator.getCustomer(" ", sbMessage);
-		assertTrue(sbMessage.toString().contains("Field customer is a required field"));
+		assertTrue(sbMessage.toString().contains(Constants.getMsgRequiredField(Constants.FIELD_NAME_CUSTOMER)));
 	}
 	
 	@Test
@@ -210,5 +212,16 @@ public class BankslipValidatorTest {
 	public void validRegexDateException() throws ParseException{
 		bankslipValidator.validRegexDate("07-05-2018");
 	}
+	
+	@Test
+	public void validDTOTest(){
+		assertTrue(bankslipValidator.validDTO(new BankslipDTO()));
+	}
+	
+	@Test(expected = HttpMessageNotReadableException.class)
+	public void validDTOInvalid(){
+		assertTrue(bankslipValidator.validDTO(null));
+	}
+	
 	
 }

@@ -8,13 +8,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.joenk.bankslip.BankslipApplication;
 import com.joenk.bankslip.enums.Status;
 import com.joenk.bankslip.model.BankslipDTO;
-import com.joenk.bankslip.model.ReturnMessageDTO;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes=BankslipApplication.class)
@@ -36,27 +36,32 @@ public class BankslipControllerTest {
 		bankslipController.create(createBankslipDTO);		
 	}
 	
+	@Test(expected = HttpMessageNotReadableException.class)
+	public void createException(){
+		bankslipController.create(null);
+	}
+	
 	@Test
 	public void listAllTest(){		
-		ResponseEntity<ReturnMessageDTO> response = bankslipController.listAll();				
+		ResponseEntity<Object> response = bankslipController.listAll();				
 		assertTrue(HttpStatus.OK.value() == response.getStatusCodeValue());
 	}
 	
 	@Test
 	public void getByIdTest(){		
-		ResponseEntity<ReturnMessageDTO> response = bankslipController.getById(createBankslipDTO.getId());				
+		ResponseEntity<Object> response = bankslipController.getById(createBankslipDTO.getId());				
 		assertTrue(HttpStatus.OK.value() == response.getStatusCodeValue());
 	}
 	
 	@Test
 	public void payTest(){		
-		ResponseEntity<ReturnMessageDTO> response = bankslipController.pay(createBankslipDTO.getId());				
+		ResponseEntity<Object> response = bankslipController.pay(createBankslipDTO.getId());				
 		assertTrue(HttpStatus.NO_CONTENT.value() == response.getStatusCodeValue());
 	}
 	
 	@Test
 	public void cancelTest(){		
-		ResponseEntity<ReturnMessageDTO> response = bankslipController.cancel(createBankslipDTO.getId());				
+		ResponseEntity<Object> response = bankslipController.cancel(createBankslipDTO.getId());				
 		assertTrue(HttpStatus.NO_CONTENT.value() == response.getStatusCodeValue());
 	}
 	

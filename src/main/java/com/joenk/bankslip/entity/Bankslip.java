@@ -8,26 +8,30 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import com.joenk.bankslip.constants.Constants;
 import com.joenk.bankslip.enums.Status;
 
-@Entity @Table(name = "BANKSLIP")
+@Entity @Table(name = Constants.TABLE_BANKSLIP)
 public class Bankslip {
 
     @Id
-    @Column(name = "id")
+    @Column(name = Constants.FIELD_NAME_ID)
     private String id;
     
-    @Column(name = "due_date")
+    @Column(name = Constants.FIELD_NAME_DUE_DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dueDate;
 
-    @Column(name = "total_in_cents")
+    @Column(name = Constants.FIELD_NAME_TOTAL_IN_CENTS)
     private Integer totalInCents;
 
-    @Column(name = "customer")
+    @Column(name = Constants.FIELD_NAME_CUSTOMER)
     private String customer;
 
-    @Column(name = "status")
+    @Column(name = Constants.FIELD_NAME_STATUS)
     @Enumerated(EnumType.STRING)
     private Status status;
     

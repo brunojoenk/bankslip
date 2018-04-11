@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -20,7 +21,7 @@ import com.joenk.bankslip.model.BankslipDTO;
 @Component
 public class BankslipValidator {
 	
-	public Bankslip converDTOtoEntity(final BankslipDTO bankslipDTO){
+	public Bankslip converDTOtoEntity(final BankslipDTO bankslipDTO) throws FieldInvalidValueException{
 		final Bankslip bankslip = new Bankslip();
 		final StringBuilder sbMessage = new StringBuilder();		
 		bankslip.setId(bankslipDTO.getId());
@@ -44,14 +45,14 @@ public class BankslipValidator {
 	
 	public Date getDueDate(final String dueDateText, final StringBuilder sbMessage){		
 		try {
-			validTextField(dueDateText, "due_date");
+			validTextField(dueDateText, Constants.FIELD_NAME_DUE_DATE);
 			validRegexDate(dueDateText);
 			final DateFormat formatter = new SimpleDateFormat(Constants.DATE_PATTERN);
 			final Date date = formatter.parse(dueDateText);
 			return date;
 		} 
 		catch (ParseException e) {
-			sbMessage.append("Field due_date must be pattern YYYY-MM-DD");
+			sbMessage.append(Constants.MSG_ERROR_PATTERN_DATE);
 		}
 		catch (FieldInvalidValueException e) {
 			sbMessage.append(e.getMessageErroṛ());
@@ -67,24 +68,24 @@ public class BankslipValidator {
 	
 	public Status getStatus(final String statusText, final StringBuilder sbMessage) {
 		try{
-			validTextField(statusText, "status");
+			validTextField(statusText, Constants.FIELD_NAME_STATUS);
 			final Status status = Status.valueOf(statusText);
 			return status;
 		}catch(IllegalArgumentException e){
-			sbMessage.append("Field status must be PENDING, PAID or CANCELED");
+			sbMessage.append(Constants.MSG_ERROR_STAUTUS_INVALID);
 		}
 		return null;
 	}
 	
 	public Integer getTotalInCents(final String totalInCentsText, final StringBuilder sbMessage){
 		try{
-			validTextField(totalInCentsText, "total_in_cents");
+			validTextField(totalInCentsText, Constants.FIELD_NAME_TOTAL_IN_CENTS);
 			final Integer totalInCents = Integer.valueOf(totalInCentsText);
 			validIntegerValue(totalInCents);
 			return totalInCents;
 		}
 		catch(NumberFormatException e){
-			sbMessage.append("Only number is valid");
+			sbMessage.append(Constants.MSG_ERROR_ONLY_NUMBER);
 		}
 		catch (FieldInvalidValueException e) {
 			sbMessage.append(e.getMessageErroṛ());
@@ -94,7 +95,7 @@ public class BankslipValidator {
 	
 	public String getCustomer(final String customerText, final StringBuilder sbMessage){
 		try{
-			validTextField(customerText, "customer");
+			validTextField(customerText, Constants.FIELD_NAME_CUSTOMER);
 			return customerText;
 		}
 		catch (FieldInvalidValueException e) {
@@ -109,18 +110,18 @@ public class BankslipValidator {
 			return uuid;
 		}
 		catch(IllegalArgumentException e){
-			throw new UUIDInvalidException("Invalid id provided - it must be a valid UUID");
+			throw new UUIDInvalidException(Constants.MSG_ERROR_UUID_INVALID);
 		}
 	}
 	
 	public Boolean validEntity(final Bankslip bankslip) {
 		if(bankslip == null) {
-			throw new NotFoundEntityException("Bankslip not found with the specified id");
+			throw new NotFoundEntityException(Constants.MSG_ERROR_BANKSLIP_NOT_FOUND);
 		}
 		return true;
 	}
 	
-	public Boolean validTextMessageError(final StringBuilder sbMessage){
+	public Boolean validTextMessageError(final StringBuilder sbMessage) throws FieldInvalidValueException{
 		if(StringUtils.hasText(sbMessage)){
 			throw new FieldInvalidValueException(sbMessage.toString());
 		}
@@ -129,14 +130,14 @@ public class BankslipValidator {
 	
 	public Boolean validTextField(final String text, final String field){
 		if(!StringUtils.hasText(text)){
-			throw new FieldInvalidValueException("Field " + field + " is a required field");
+			throw new FieldInvalidValueException(Constants.getMsgRequiredField(field));
 		}
 		return true;
 	}
 	
 	public Boolean validIntegerValue(final Integer integer){
 		if(integer < 1){
-			throw new FieldInvalidValueException("The number must be greater than 0");
+			throw new FieldInvalidValueException(Constants.MSG_ERROR_INTEGER_GREATER_0);
 		}
 		return true;
 	}
@@ -147,4 +148,12 @@ public class BankslipValidator {
 		}
 		return true;
 	}
+	
+	public Boolean validDTO(final BankslipDTO bankslipDTO){
+		if(bankslipDTO == null){
+			throw new HttpMessageNotReadableException(Constants.MSG_BANKSLIP_NOT_PROVIDED);
+		}
+		return true;
+	}
+	
 }
