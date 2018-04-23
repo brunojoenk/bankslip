@@ -3,9 +3,8 @@
 * MAVEN 3+
 
 ## Iniciar a aplicação
-### Passo 1 - Navegar ou realizar comando (cd) para chegar até a raiz do projeto
-### Passo 2 - executar o comando: mvn spring-boot:run
-
+#### Passo 1 - Navegar ou realizar comando (cd) para chegar até a raiz do projeto
+#### Passo 2 - executar o comando: mvn spring-boot:run
 #### Caso não queira baixar o projeto pode acesso pelo Heroku
 #### Basta subistituir o link 
 #### http://localhost:8080/ por 
