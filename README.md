@@ -42,6 +42,7 @@
 
 ### Mensagens de resposta
 * 200 : Ok 
+```
 EX: [  
    {  
       "id":"b8ef0f43-e873-4da0-8465-2d7af03a0b3c",
@@ -60,7 +61,7 @@ EX: [
       "fine":null
    }
 ]
-
+```
 
 ## VER DETALHES
 ### GET http://localhost:8080/rest/bankslips/{id}
