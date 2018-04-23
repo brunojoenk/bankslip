@@ -30,7 +30,7 @@
 }
 ```
 
-## Mensagens de resposta
+### Mensagens de resposta
 ### 201 : Bankslip created
 * 400 : Bankslip not provided in the request body
 * 422 : Invalid bankslip provided.The possible reasons are:
@@ -40,7 +40,7 @@
 ## LISTAR BOLETOS
 ### GET http://localhost:8080/rest/bankslips/
 
-Mensagens de resposta
+### Mensagens de resposta
 * 200 : Ok 
 EX: [  
    {  
@@ -69,7 +69,7 @@ EX: [
 * Até 10 dias: Multa de 0,5% (Juros Simples)
 * Acima de 10 dias: Multa de 1% (Juros Simples)
 
-## Mensagens de resposta
+### Mensagens de resposta
 * 200 : Ok
 * 400 : Invalid id provided - it must be a valid UUID
 * 404 : Bankslip not found with the specified id
@@ -79,7 +79,7 @@ EX: [
 ### PUT http://localhost:8080/rest/bankslips/{id}/pay
 ### Ex: http://localhost:8080/rest/bankslips/cd90034d-e0f4-4ea7-95f2-0da8ba157d55/pay
 
-## Mensagens de resposta
+### Mensagens de resposta
 * 204 : Bankslip paid
 * 404 : Bankslip not found with the specified id
 
@@ -88,6 +88,6 @@ EX: [
 ### DELETE http://localhost:8080/rest/bankslips/{id}/cancel
 ### Ex: http://localhost:8080/rest/bankslips/cd90034d-e0f4-4ea7-95f2-0da8ba157d55/cancel
 
-## Mensagens de resposta
+### Mensagens de resposta
 * 204 : Bankslip canceled
 * 404 : Bankslip not found with the specified id
